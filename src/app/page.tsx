@@ -23,7 +23,8 @@ export default function Home() {
     fetch('https://api.thedogapi.com/v1/breeds')
       .then(res => res.json())
       .then(data => {
-        const breedsWithoutImages = data.filter((breed: Breed) => !breed.image?.url);
+        const breeds: Breed[] = data;
+        const breedsWithoutImages = breeds.filter(breed => !breed.image?.url);
         if (breedsWithoutImages.length > 0) {
           // Fetch random images from Dog CEO API
           const randomImagePromises = Array.from({ length: Math.min(breedsWithoutImages.length, 10) }, () =>
@@ -33,14 +34,14 @@ export default function Home() {
             breedsWithoutImages.forEach((breed, index) => {
               breed.image = { url: randomImages[index % randomImages.length] };
             });
-            setBreeds(data);
+            setBreeds(breeds);
             setLoading(false);
           }).catch(() => {
-            setBreeds(data);
+            setBreeds(breeds);
             setLoading(false);
           });
         } else {
-          setBreeds(data);
+          setBreeds(breeds);
           setLoading(false);
         }
       })
